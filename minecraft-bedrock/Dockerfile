@@ -22,7 +22,8 @@ RUN apt-get update \
 WORKDIR /bedrock
 RUN \
     unzip /tmp/server.zip \
-    && chmod +x bedrock_server
+    && chmod +x bedrock_server \
+    && rm *.debug
 
 
 ## Runtime
