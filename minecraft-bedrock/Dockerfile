@@ -23,7 +23,7 @@ WORKDIR /bedrock
 RUN \
     unzip /tmp/server.zip \
     && chmod +x bedrock_server \
-    && rm *.debug
+    && rm -f *.debug
 
 
 ## Runtime
