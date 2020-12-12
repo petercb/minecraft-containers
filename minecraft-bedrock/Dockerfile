@@ -1,6 +1,6 @@
 FROM debian:10.3-slim AS build
 
-ARG VERSION=1.16.101.01
+ARG VERSION=1.16.200.02
 
 WORKDIR /tmp
 
