@@ -18,25 +18,9 @@ docker run -d -e EULA=TRUE -p 19132:19132/udp --name minecraft petercb/minecraft
 
 ### Server Properties
 
-- `SERVER_NAME`
-- `SERVER_PORT`
-- `GAMEMODE`
-- `DIFFICULTY`
-- `LEVEL_TYPE`
-- `ALLOW_CHEATS`
-- `MAX_PLAYERS`
-- `ONLINE_MODE`
-- `WHITE_LIST`
-- `VIEW_DISTANCE`
-- `TICK_DISTANCE`
-- `PLAYER_IDLE_TIMEOUT`
-- `MAX_THREADS`
-- `LEVEL_NAME`
-- `LEVEL_SEED`
-- `DEFAULT_PLAYER_PERMISSION_LEVEL`
-- `TEXTUREPACK_REQUIRED`
+See [property definition file](property-definitions.json) for environment variables that can be set
 
-See [here](https://minecraft.gamepedia.com/Server.properties#Bedrock_Edition_3) for description of what each of the above do
+See [here](https://minecraft.gamepedia.com/Server.properties#Bedrock_Edition_3) for description of properties
 
 ## Volumes
 
