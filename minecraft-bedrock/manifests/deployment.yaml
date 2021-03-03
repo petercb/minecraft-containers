@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-bedrock
+  labels:
+    app: minecraft-bedrock
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: minecraft-bedrock
+  template:
+    metadata:
+      labels:
+        app: minecraft-bedrock
+    spec:
+      containers:
+      - name: minecraft-bedrock
+        image: "petercb/minecraft-bedrock-server:latest"
+        imagePullPolicy: Always
+        stdin: true
+        tty: true
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+        envFrom:
+        - configMapRef:
+            name: minecraft-bedrock
+        ports:
+        - name: minecraft
+          containerPort: 19132
+          protocol: UDP
+        volumeMounts:
+        - name: worlds
+          mountPath: /bedrock/worlds
+      volumes:
+      - name: worlds
+        persistentVolumeClaim:
+          claimName: minecraft-bedrock-worlds

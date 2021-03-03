@@ -1,0 +1,10 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minecraft-bedrock
+data:
+  EULA: "TRUE"
+  GAMEMODE: creative
+  DIFFICULTY: normal
+  SERVER_NAME: test
