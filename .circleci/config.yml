@@ -1,4 +1,10 @@
 version: 2.1
+
+parameters:
+  docker-org:
+    type: string
+    default: petercb
+
 workflows:
   version: 2
   default:
@@ -8,12 +14,10 @@ workflows:
 
 jobs:
   container:
-    environment:
-      DOCKER_ORG: petercb
     docker:
       - image: cimg/base:stable
         auth:
-          username: $DOCKER_ORG
+          username: << pipeline.parameters.docker-org >>
           password: $DOCKER_PASSWORD
     steps:
       - checkout
@@ -26,11 +30,12 @@ jobs:
             VERSION: 1.6.3
           working_directory: bedrockconnect
           command: |
+            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}"
             docker buildx build --push \
               --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
               --build-arg VERSION=${VERSION} \
-              --tag ${DOCKER_ORG}/${DOCKER_REPO}:${VERSION} \
-              --tag ${DOCKER_ORG}/${DOCKER_REPO}:latest \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION} \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
               .
       - run:
           name: Velocity
@@ -39,12 +44,13 @@ jobs:
             VERSION: 1.1.4
           working_directory: velocity-proxy
           command: |
+            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}"
             docker buildx build --push \
               --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
               --build-arg VERSION=${VERSION} \
               --target base \
-              --tag ${DOCKER_ORG}/${DOCKER_REPO}:${VERSION} \
-              --tag ${DOCKER_ORG}/${DOCKER_REPO}:latest \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION} \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
               .
       - run:
           name: Velocity with Geyser
@@ -53,12 +59,13 @@ jobs:
             VERSION: 1.1.4
           working_directory: velocity-proxy
           command: |
+            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-geyser"
             docker buildx build --push \
               --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
               --build-arg VERSION=${VERSION} \
               --target geyser \
-              --tag ${DOCKER_ORG}/${DOCKER_REPO}:${VERSION}-geyser \
-              --tag ${DOCKER_ORG}/${DOCKER_REPO}:latest-geyser \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-geyser \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest-geyser \
               .
       - run:
           name: Minecraft (Java)
@@ -68,10 +75,11 @@ jobs:
             URL: https://launcher.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar
           working_directory: minecraft-java
           command: |
+            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}"
             docker buildx build --push \
               --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
               --build-arg VERSION=${VERSION} \
               --build-arg SOURCE_URL=${URL} \
-              --tag ${DOCKER_ORG}/${DOCKER_REPO}:${VERSION} \
-              --tag ${DOCKER_ORG}/${DOCKER_REPO}:latest \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION} \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
               .
