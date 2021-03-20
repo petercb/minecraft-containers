@@ -16,13 +16,14 @@ jobs:
   container:
     docker:
       - image: cimg/base:stable
-        auth:
-          username: << pipeline.parameters.docker-org >>
-          password: $DOCKER_PASSWORD
     steps:
       - checkout
       - setup_remote_docker:
           version: 18.09.3
+      - run:
+          name: Docker Login
+          command: echo "${DOCKER_PASSWORD}" | docker login -u "<< pipeline.parameters.docker-org >>" --password-stdin
+
       - run:
           name: Bedrock-Connect
           environment:
