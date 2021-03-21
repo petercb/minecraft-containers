@@ -49,24 +49,8 @@ jobs:
             docker buildx build --push \
               --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
               --build-arg VERSION=${VERSION} \
-              --target base \
               --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION} \
               --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
-              .
-      - run:
-          name: Velocity with Geyser
-          environment:
-            DOCKER_REPO: velocity-proxy
-            VERSION: 1.1.4
-          working_directory: velocity-proxy
-          command: |
-            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-geyser"
-            docker buildx build --push \
-              --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
-              --build-arg VERSION=${VERSION} \
-              --target geyser \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-geyser \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest-geyser \
               .
       - run:
           name: Minecraft (Java)
