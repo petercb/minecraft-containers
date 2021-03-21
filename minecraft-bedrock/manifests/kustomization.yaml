@@ -6,9 +6,13 @@ commonLabels:
 
 namespace: minecraft-bedrock
 
+configMapGenerator:
+  - name: minecraft-bedrock
+    literals:
+      - EULA=TRUE
+
 resources:
   - namespace.yaml
   - pvc.yaml
-  - config.yaml
   - deployment.yaml
   - service.yaml
