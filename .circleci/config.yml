@@ -28,7 +28,7 @@ jobs:
           name: Bedrock-Connect
           environment:
             DOCKER_REPO: bedrock-connect
-            VERSION: 1.6.3
+            VERSION: 1.6.4
           working_directory: bedrockconnect
           command: |
             echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}"
