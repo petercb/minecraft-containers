@@ -43,28 +43,16 @@ jobs:
           environment:
             DOCKER_REPO: velocity-proxy
             VERSION: 1.1.4
+            GEYSER_VERSION: 1.2.1
+            GEYSER_BUILD_ID: 20210416.154342-10
           working_directory: velocity-proxy
           command: |
-            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}"
+            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-geyser${GEYSER_VERSION}-${GEYSER_BUILD_ID}"
             docker buildx build --push \
               --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
               --build-arg VERSION=${VERSION} \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION} \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
-              .
-      - run:
-          name: Minecraft (Java)
-          environment:
-            DOCKER_REPO: minecraft-java
-            VERSION: 1.16.5
-            URL: https://launcher.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar
-          working_directory: minecraft-java
-          command: |
-            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}"
-            docker buildx build --push \
-              --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
-              --build-arg VERSION=${VERSION} \
-              --build-arg SOURCE_URL=${URL} \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION} \
+              --build-arg GEYSER_VERSION=${GEYSER_VERSION} \
+              --build-arg GEYSER_BUILD_ID=${GEYSER_BUILD_ID} \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-geyser${GEYSER_VERSION}-${GEYSER_BUILD_ID} \
               --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
               .
