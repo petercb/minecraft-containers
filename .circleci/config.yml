@@ -28,7 +28,7 @@ jobs:
           name: Bedrock-Connect
           environment:
             DOCKER_REPO: bedrock-connect
-            VERSION: 1.6.4
+            VERSION: 1.7
           working_directory: bedrockconnect
           command: |
             echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}"
@@ -36,23 +36,5 @@ jobs:
               --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
               --build-arg VERSION=${VERSION} \
               --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION} \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
-              .
-      - run:
-          name: Velocity
-          environment:
-            DOCKER_REPO: velocity-proxy
-            VERSION: 1.1.4
-            GEYSER_VERSION: 1.2.1
-            GEYSER_BUILD_ID: 20210416.154342-10
-          working_directory: velocity-proxy
-          command: |
-            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-geyser${GEYSER_VERSION}-${GEYSER_BUILD_ID}"
-            docker buildx build --push \
-              --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
-              --build-arg VERSION=${VERSION} \
-              --build-arg GEYSER_VERSION=${GEYSER_VERSION} \
-              --build-arg GEYSER_BUILD_ID=${GEYSER_BUILD_ID} \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-geyser${GEYSER_VERSION}-${GEYSER_BUILD_ID} \
               --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
               .
