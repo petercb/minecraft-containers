@@ -9,32 +9,32 @@ workflows:
   version: 2
   default:
     jobs:
-      - container:
+      - bedrock-connect:
           context: DockerHub
 
 jobs:
-  container:
+  bedrock-connect:
     docker:
       - image: cimg/base:stable
     steps:
       - checkout
       - setup_remote_docker:
-          version: 18.09.3
+          version: 20.10.7
       - run:
           name: Docker Login
           command: echo "${DOCKER_PASSWORD}" | docker login -u "<< pipeline.parameters.docker-org >>" --password-stdin
-
       - run:
           name: Bedrock-Connect
           environment:
             DOCKER_REPO: bedrock-connect
-            VERSION: 1.7
+            VERSION: 1.12
           working_directory: bedrockconnect
           command: |
             echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}"
             docker buildx build --push \
               --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
               --build-arg VERSION=${VERSION} \
+              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-<< pipeline.number >> \
               --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION} \
               --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
               .
