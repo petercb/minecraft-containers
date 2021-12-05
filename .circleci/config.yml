@@ -19,7 +19,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 20.10.7
+          version: 18.09.3
       - run:
           name: Docker Login
           command: echo "${DOCKER_PASSWORD}" | docker login -u "<< pipeline.parameters.docker-org >>" --password-stdin
