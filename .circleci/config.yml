@@ -1,40 +1,38 @@
 version: 2.1
 
+orbs:
+  docker: circleci/docker@2.0.1
+
 parameters:
-  docker-org:
+  bedrock-connect-version:
     type: string
-    default: petercb
+    default: "1.12"
+  bedrock-connect-repo:
+    type: string
+    default: bedrock-connect
+
+executors:
+  arm:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
 
 workflows:
   version: 2
-  default:
+  container-build:
     jobs:
-      - bedrock-connect:
+      - docker/publish:
+          name: << pipeline.parameters.bedrock-connect-repo >> ARMv8
           context: DockerHub
-
-jobs:
-  bedrock-connect:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - setup_remote_docker:
-          version: 18.09.3
-      - run:
-          name: Docker Login
-          command: echo "${DOCKER_PASSWORD}" | docker login -u "<< pipeline.parameters.docker-org >>" --password-stdin
-      - run:
-          name: Bedrock-Connect
-          environment:
-            DOCKER_REPO: bedrock-connect
-            VERSION: 1.12
-          working_directory: bedrockconnect
-          command: |
-            echo "Building << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}"
-            docker buildx build --push \
-              --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
-              --build-arg VERSION=${VERSION} \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION}-<< pipeline.number >> \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:${VERSION} \
-              --tag << pipeline.parameters.docker-org >>/${DOCKER_REPO}:latest \
-              .
+          executor: arm
+          cache_from: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>:latest"
+          image: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>"
+          tag: "<< pipeline.parameters.bedrock-connect-version >>-<< pipeline.number >>,<< pipeline.parameters.bedrock-connect-version >>,latest"
+          extra_build_args: "--build-arg VERSION=<< pipeline.parameters.bedrock-connect-version >>"
+      - docker/publish:
+          name: << pipeline.parameters.bedrock-connect-repo >> AMD64
+          context: DockerHub
+          cache_from: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>:latest"
+          image: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>"
+          tag: "<< pipeline.parameters.bedrock-connect-version >>-<< pipeline.number >>,<< pipeline.parameters.bedrock-connect-version >>,latest"
+          extra_build_args: "--build-arg VERSION=<< pipeline.parameters.bedrock-connect-version >>"
