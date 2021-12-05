@@ -29,6 +29,8 @@ workflows:
           image: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>"
           tag: "<< pipeline.parameters.bedrock-connect-version >>-<< pipeline.number >>,<< pipeline.parameters.bedrock-connect-version >>,latest"
           extra_build_args: "--build-arg VERSION=<< pipeline.parameters.bedrock-connect-version >>"
+          docker-context: bedrockconnect
+          dockerfile: bedrockconnect/Dockerfile
       - docker/publish:
           name: << pipeline.parameters.bedrock-connect-repo >> AMD64
           context: DockerHub
@@ -36,3 +38,5 @@ workflows:
           image: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>"
           tag: "<< pipeline.parameters.bedrock-connect-version >>-<< pipeline.number >>,<< pipeline.parameters.bedrock-connect-version >>,latest"
           extra_build_args: "--build-arg VERSION=<< pipeline.parameters.bedrock-connect-version >>"
+          docker-context: bedrockconnect
+          dockerfile: bedrockconnect/Dockerfile
