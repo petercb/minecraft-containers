@@ -11,32 +11,36 @@ parameters:
     type: string
     default: bedrock-connect
 
-executors:
-  arm:
-    machine:
-      image: ubuntu-2004:202101-01
-    resource_class: arm.medium
+jobs:
+  bedrock-connect:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 18.09.3
+      - docker/check
+      - run:
+          name: BuildX
+          environment:
+            DOCKER_REPO: bedrock-connect
+            VERSION: 1.12
+          working_directory: bedrockconnect
+          command: >-
+            docker buildx build
+            --push
+            --platform linux/arm64/v8,linux/amd64
+            --build-arg VERSION=${VERSION}
+            --cache-from ${DOCKER_LOGIN}/${DOCKER_REPO}:cache
+            --cache-to ${DOCKER_LOGIN}/${DOCKER_REPO}:cache
+            --tag ${DOCKER_LOGIN}/${DOCKER_REPO}:${VERSION}-<< pipeline.number >>
+            --tag ${DOCKER_LOGIN}/${DOCKER_REPO}:${VERSION}
+            --tag ${DOCKER_LOGIN}/${DOCKER_REPO}:latest
+            .
 
 workflows:
   version: 2
   container-build:
     jobs:
-      - docker/publish:
-          name: << pipeline.parameters.bedrock-connect-repo >> ARMv8
+      - bedrock-connect:
           context: DockerHub
-          executor: arm
-          cache_from: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>:latest"
-          image: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>"
-          tag: "<< pipeline.parameters.bedrock-connect-version >>-<< pipeline.number >>,<< pipeline.parameters.bedrock-connect-version >>,latest"
-          extra_build_args: "--build-arg VERSION=<< pipeline.parameters.bedrock-connect-version >>"
-          docker-context: bedrockconnect
-          dockerfile: bedrockconnect/Dockerfile
-      - docker/publish:
-          name: << pipeline.parameters.bedrock-connect-repo >> AMD64
-          context: DockerHub
-          cache_from: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>:latest"
-          image: "${DOCKER_LOGIN}/<< pipeline.parameters.bedrock-connect-repo >>"
-          tag: "<< pipeline.parameters.bedrock-connect-version >>-<< pipeline.number >>,<< pipeline.parameters.bedrock-connect-version >>,latest"
-          extra_build_args: "--build-arg VERSION=<< pipeline.parameters.bedrock-connect-version >>"
-          docker-context: bedrockconnect
-          dockerfile: bedrockconnect/Dockerfile
