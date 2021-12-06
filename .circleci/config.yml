@@ -4,12 +4,15 @@ orbs:
   docker: circleci/docker@2.0.1
 
 parameters:
-  bedrock-connect-version:
+  minecraft-java-version:
     type: string
-    default: "1.12"
-  bedrock-connect-repo:
+    default: "1.17.1"
+  minecraft-java-build:
     type: string
-    default: bedrock-connect
+    default: "391"
+  minecraft-java-repo:
+    type: string
+    default: minecraft-java
 
 jobs:
   bedrock-connect:
@@ -44,3 +47,14 @@ workflows:
     jobs:
       - bedrock-connect:
           context: DockerHub
+      - docker/publish:
+          name: minecraft-java
+          context: DockerHub
+          cache_from: "${DOCKER_LOGIN}/<< pipeline.parameters.minecraft-java-repo >>:latest"
+          image: "${DOCKER_LOGIN}/<< pipeline.parameters.minecraft-java-repo >>"
+          tag: "<< pipeline.parameters.minecraft-java-version >>-<< pipeline.number >>,<< pipeline.parameters.minecraft-java-version >>,latest"
+          extra_build_args: >-
+            --build-arg VERSION=<< pipeline.parameters.minecraft-java-version >>
+            -- build-arg BUILD_ID=<< pipeline.parameters.minecraft-java-build >>
+          docker-context: minecraft-java
+          dockerfile: minecraft-java/Dockerfile

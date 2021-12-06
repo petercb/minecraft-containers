@@ -1,17 +1,18 @@
-FROM adoptopenjdk:11-jre-hotspot
+FROM azul/zulu-openjdk-alpine:17.0.1-jre-headless
 
-ARG SOURCE_URL=https://launcher.mojang.com/v1/objects/1b557e7b033b583cd9f66746b7a9ab1ec1673ced/server.jar
+ARG VERSION=1.17.1
+ARG BUILD_ID=391
 
-WORKDIR /minecraft
-
-ADD ${SOURCE_URL} /minecraft.jar
-
-RUN java -jar /minecraft.jar --nogui --initSettings
+ADD https://papermc.io/api/v2/projects/paper/versions/${VERSION}/builds/${BUILD_ID}/downloads/paper-${VERSION}-${BUILD_ID}.jar /minecraft.jar
+ADD https://github.com/ViaVersion/ViaVersion/releases/download/4.1.1/ViaVersion-4.1.1.jar /plugins/ViaVersion.jar
+ADD https://github.com/Nuytemans-Dieter/BetterSleeping/releases/download/v4.0.0/BetterSleeping.jar /plugins/BetterSleeping.jar
 
 EXPOSE 25565
 EXPOSE 25575
 
-VOLUME /minecraft
+COPY entrypoint.sh /
 
-ENTRYPOINT ["java", "-XX:+UseG1GC", "-XX:G1HeapRegionSize=4M", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysPreTouch", "-XX:MaxInlineLevel=15", "-jar", "/minecraft.jar"]
+WORKDIR /minecraft
+
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["--nogui"]
