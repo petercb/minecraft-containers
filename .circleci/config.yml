@@ -55,6 +55,6 @@ workflows:
           tag: "<< pipeline.parameters.minecraft-java-version >>-<< pipeline.number >>,<< pipeline.parameters.minecraft-java-version >>,latest"
           extra_build_args: >-
             --build-arg VERSION=<< pipeline.parameters.minecraft-java-version >>
-            -- build-arg BUILD_ID=<< pipeline.parameters.minecraft-java-build >>
+            --build-arg BUILD_ID=<< pipeline.parameters.minecraft-java-build >>
           docker-context: minecraft-java
           dockerfile: minecraft-java/Dockerfile
