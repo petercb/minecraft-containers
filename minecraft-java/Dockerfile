@@ -12,6 +12,8 @@ EXPOSE 25575
 
 COPY entrypoint.sh /
 
+RUN chmod +r /minecraft.jar /plugins/*.jar
+
 USER 1000
 
 WORKDIR /minecraft

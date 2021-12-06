@@ -1,16 +1,22 @@
 #!/bin/sh
 
+echo "Running in $(pwd)"
 echo "Accepting the EULA"
 echo "eula=true" > eula.txt
 
-if [ -z "${JAVA_OPTS}" ] ; then
-    JAVA_OPTS="-XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+ParallelRefProcEnabled -XX:+AlwaysPreTouch -XX:MaxInlineLevel=15"
-fi
-
+echo "Initializing plugins"
 mkdir -p plugins
 for plugin in /plugins/*.jar ; do
-    ln -sf "${plugin}" plugins/
+    ln -sfv "${plugin}" plugins/
 done
 
-# shellcheck disable=SC2086
-java ${JAVA_OPTS} -jar "${JAR_FILE:-/minecraft.jar}" "$@"
+command="java"
+if [ -z "${JAVA_OPTS}" ] ; then
+    command="${command} -XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+ParallelRefProcEnabled -XX:+AlwaysPreTouch -XX:MaxInlineLevel=15"
+else
+    command="${command} ${JAVA_OPTS}"
+fi
+command="${command} -jar ${JAR_FILE:-/minecraft.jar} $*"
+
+echo "Running: '${command}'"
+exec ${command}
