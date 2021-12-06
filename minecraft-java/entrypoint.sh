@@ -12,4 +12,5 @@ for plugin in /plugins/*.jar ; do
     ln -sf "${plugin}" plugins/
 done
 
-java "${JAVA_OPTS}" -jar "${JAR_FILE:-/minecraft.jar}" "$@"
+# shellcheck disable=SC2086
+java ${JAVA_OPTS} -jar "${JAR_FILE:-/minecraft.jar}" "$@"

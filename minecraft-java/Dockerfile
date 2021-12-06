@@ -12,6 +12,8 @@ EXPOSE 25575
 
 COPY entrypoint.sh /
 
+USER 1000
+
 WORKDIR /minecraft
 
 ENTRYPOINT ["/entrypoint.sh"]
