@@ -3,19 +3,21 @@ version: 2.1
 orbs:
   docker: circleci/docker@2.0.1
 
-parameters:
-  minecraft-java-version:
-    type: string
-    default: "1.17.1"
-  minecraft-java-build:
-    type: string
-    default: "391"
-  minecraft-java-repo:
-    type: string
-    default: minecraft-java
-
 jobs:
-  bedrock-connect:
+  buildx:
+    parameters:
+      extra-args:
+        type: string
+        default: ""
+      platforms:
+        type: string
+        default: linux/arm64/v8,linux/amd64
+      repo-name:
+        type: string
+      version:
+        type: string
+      work-dir:
+        type: string
     docker:
       - image: cimg/base:stable
     steps:
@@ -24,37 +26,48 @@ jobs:
           version: 18.09.3
       - docker/check
       - run:
-          name: BuildX
-          environment:
-            DOCKER_REPO: bedrock-connect
-            VERSION: 1.12
-          working_directory: bedrockconnect
+          name: build
+          working_directory: << parameters.work-dir >>
           command: >-
             docker buildx build
             --push
-            --platform linux/arm64/v8,linux/amd64
-            --build-arg VERSION=${VERSION}
-            --cache-from ${DOCKER_LOGIN}/${DOCKER_REPO}:cache
-            --cache-to ${DOCKER_LOGIN}/${DOCKER_REPO}:cache
-            --tag ${DOCKER_LOGIN}/${DOCKER_REPO}:${VERSION}-<< pipeline.number >>
-            --tag ${DOCKER_LOGIN}/${DOCKER_REPO}:${VERSION}
-            --tag ${DOCKER_LOGIN}/${DOCKER_REPO}:latest
+            --platform << parameters.platforms >>
+            --build-arg VERSION=<< parameters.version >>
+            --build-arg BUILDKIT_INLINE_CACHE=1
+            <<# parameters.extra-args >>
+            << parameters.extra-args >>
+            <</ parameters.extra-args >>
+            --cache-from ${DOCKER_LOGIN}/<< parameters.repo-name >>:cache
+            --cache-to ${DOCKER_LOGIN}/<< parameters.repo-name >>:cache
+            --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>-<< pipeline.number >>
+            --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>
+            --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:latest
             .
 
 workflows:
   version: 2
   container-build:
     jobs:
-      - bedrock-connect:
+      - buildx:
+          name: bedrock-connect
           context: DockerHub
-      - docker/publish:
+          repo-name: bedrock-connect
+          version: "1.12"
+          work-dir: bedrockconnect
+      - buildx:
           name: minecraft-java
           context: DockerHub
-          cache_from: "${DOCKER_LOGIN}/<< pipeline.parameters.minecraft-java-repo >>:latest"
-          image: "${DOCKER_LOGIN}/<< pipeline.parameters.minecraft-java-repo >>"
-          tag: "<< pipeline.parameters.minecraft-java-version >>-<< pipeline.number >>,<< pipeline.parameters.minecraft-java-version >>,latest"
-          extra_build_args: >-
-            --build-arg VERSION=<< pipeline.parameters.minecraft-java-version >>
-            --build-arg BUILD_ID=<< pipeline.parameters.minecraft-java-build >>
-          docker-context: minecraft-java
-          dockerfile: minecraft-java/Dockerfile
+          platforms: linux/amd64
+          repo-name: minecraft-java
+          version: "1.17.1"
+          work-dir: minecraft-java
+          extra-args: >-
+            --build-arg BUILD_ID=391
+      - buildx:
+          name: velocity-proxy
+          context: DockerHub
+          repo-name: velocity-proxy
+          version: "3.1.0"
+          work-dir: velocity-proxy
+          extra-args: >-
+            --build-arg BUILD_ID=95

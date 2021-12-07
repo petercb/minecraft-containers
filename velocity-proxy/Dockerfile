@@ -1,17 +1,21 @@
-FROM adoptopenjdk:11-jre-hotspot
+FROM openjdk:17.0.1-slim-buster
 
-ARG VERSION=1.1.4
-ARG GEYSER_VERSION=1.2.1
-ARG GEYSER_BUILD_ID=20210416.154342-10
-ARG FLOODGATE_URL=https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/4/artifact/velocity/target/floodgate-velocity.jar
+ARG VERSION=3.1.0
+ARG BUILD_ID=95
 
-WORKDIR /app
+ADD https://papermc.io/api/v2/projects/velocity/versions/${VERSION}/builds/${BUILD_ID}/downloads/velocity-${VERSION}-${BUILD_ID}.jar /velocity.jar
+ADD https://ci.opencollab.dev/job/GeyserMC/job/Geyser/job/master/952/artifact/bootstrap/velocity/target/Geyser-Velocity.jar /plugins/geyser.jar
+ADD https://ci.opencollab.dev/job/GeyserMC/job/Floodgate/job/master/53/artifact/velocity/target/floodgate-velocity.jar /plugins/floodgate.jar
 
-ADD https://versions.velocitypowered.com/download/${VERSION}.jar velocity.jar
-ADD https://repo.opencollab.dev/artifactory/maven-snapshots/org/geysermc/bootstrap-velocity/${GEYSER_VERSION}-SNAPSHOT/bootstrap-velocity-${GEYSER_VERSION}-${GEYSER_BUILD_ID}.jar plugins/geyser.jar
-ADD ${FLOODGATE_URL} plugins/floodgate.jar
+COPY entrypoint.sh /
+
+RUN chmod +r /velocity.jar /plugins/*.jar
 
 EXPOSE 25577
 EXPOSE 19132/udp
 
-ENTRYPOINT ["java", "-XX:+UseG1GC", "-XX:G1HeapRegionSize=4M", "-XX:+ParallelRefProcEnabled", "-XX:+AlwaysPreTouch", "-XX:MaxInlineLevel=15", "-jar", "velocity.jar"]
+USER 1000
+
+WORKDIR /velocity
+
+ENTRYPOINT ["/entrypoint.sh"]
