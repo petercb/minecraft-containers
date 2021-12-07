@@ -33,7 +33,6 @@ jobs:
             --push
             --platform << parameters.platforms >>
             --build-arg VERSION=<< parameters.version >>
-            --build-arg BUILDKIT_INLINE_CACHE=1
             <<# parameters.extra-args >>
             << parameters.extra-args >>
             <</ parameters.extra-args >>
