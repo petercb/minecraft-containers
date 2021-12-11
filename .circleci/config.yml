@@ -22,9 +22,15 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - run:
+          name: Check Git LFS
+          command: git lfs version
       - setup_remote_docker:
-          version: 18.09.3
+          version: 20.10.7
       - docker/check
+      - run:
+          name: Configure Builder
+          command: docker buildx create --driver docker-container --use
       - run:
           name: build
           working_directory: << parameters.work-dir >>
