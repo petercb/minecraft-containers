@@ -30,7 +30,8 @@ jobs:
           working_directory: << parameters.work-dir >>
           command: >-
             docker buildx build
-            --push
+            --progress plain
+            --load
             --platform << parameters.platforms >>
             --build-arg VERSION=<< parameters.version >>
             <<# parameters.extra-args >>
@@ -42,6 +43,21 @@ jobs:
             --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>
             --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:latest
             .
+      - run:
+          name: Install and run container-structure-test
+          working_directory: << parameters.work-dir >>
+          command: |
+            destFile="${HOME}/bin/container-structure-test"
+            mkdir -p "${HOME}/bin"
+            curl -L -o "${destFile}" \
+              https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+            chmod +x "${destFile}"
+            ${destFile} test \
+              --image ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >> \
+              --config container-structure-test.yaml
+      - docker/push:
+          image: ${DOCKER_LOGIN}/<< parameters.repo-name >>
+          tag: << parameters.version >>-<< pipeline.number >>,<< parameters.version >>,latest
 
 workflows:
   version: 2
@@ -61,12 +77,16 @@ workflows:
           version: "1.17.1"
           work-dir: minecraft-java
           extra-args: >-
-            --build-arg BUILD_ID=391
+            --build-arg BUILD_ID=399
+            --build-arg VIAVERSION=4.1.1
+            --build-arg BETTER_SLEEP=4.0.0
       - buildx:
           name: velocity-proxy
           context: DockerHub
           repo-name: velocity-proxy
-          version: "3.1.0"
+          version: "3.1.1"
           work-dir: velocity-proxy
           extra-args: >-
-            --build-arg BUILD_ID=95
+            --build-arg BUILD_ID=98
+            --build-arg GEYSER_BUILD=960
+            --build-arg LOODGATE_BUILD=53

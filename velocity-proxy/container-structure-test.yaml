@@ -1,0 +1,36 @@
+---
+schemaVersion: '2.0.0'
+
+metadataTest:
+  exposedPorts:
+    - "25577"
+    - "19132"
+  user: "1000"
+  workdir: "/velocity"
+
+fileExistenceTests:
+  - name: entrypoint
+    path: "/entrypoint.sh"
+    shouldExist: true
+    isExecutableBy: "any"
+  - name: velocity
+    path: "/velocity.jar"
+    permissions: "-r--r--r--"
+    shouldExist: true
+  - name: geyser
+    path: "/plugins/geyser.jar"
+    permissions: "-r--r--r--"
+    shouldExist: true
+  - name: floodgate
+    path: "/plugins/floodgate.jar"
+    permissions: "-r--r--r--"
+    shouldExist: true
+
+commandTests:
+  - name: "java"
+    command: "java"
+    args:
+      - "-version"
+    expectedError:
+      - 'OpenJDK 64-Bit'
+      - 'build 17\.0\.1'

@@ -1,0 +1,34 @@
+---
+schemaVersion: '2.0.0'
+
+metadataTest:
+  entrypoint:
+    - "/entrypoint.sh"
+  exposedPorts:
+    - "25565"
+    - "25575"
+  user: "1000"
+  workdir: "/minecraft"
+
+fileExistenceTests:
+  - name: entrypoint
+    path: "/entrypoint.sh"
+    shouldExist: true
+    isExecutableBy: "any"
+  - name: jar
+    path: "/minecraft.jar"
+    permissions: "-r--r--r--"
+    shouldExist: true
+  - name: BetterSleep
+    path: "/plugins/BetterSleeping.jar"
+    permissions: "-r--r--r--"
+    shouldExist: true
+
+commandTests:
+  - name: "java"
+    command: "java"
+    args:
+      - "-version"
+    expectedError:
+      - 'OpenJDK 64-Bit'
+      - 'build 17\.0\.1'

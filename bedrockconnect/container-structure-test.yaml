@@ -1,0 +1,23 @@
+---
+schemaVersion: '2.0.0'
+
+metadataTest:
+  exposedPorts:
+    - "19132"
+  user: "1000"
+  workdir: "/brc"
+
+fileExistenceTests:
+  - name: jar
+    path: "/BedrockConnect.jar"
+    permissions: "-r--r--r--"
+    shouldExist: true
+
+commandTests:
+  - name: "java"
+    command: "java"
+    args:
+      - "-version"
+    expectedError:
+      - 'OpenJDK 64-Bit'
+      - 'build 17\.0\.1'
