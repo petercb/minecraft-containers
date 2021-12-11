@@ -3,7 +3,10 @@ version: 2.1
 orbs:
   docker: circleci/docker@2.0.1
 
-jobs:
+commands:
+  configure-buildx:
+    steps:
+      - run: docker buildx create --driver docker-container --use
   buildx:
     parameters:
       extra-args:
@@ -18,30 +21,9 @@ jobs:
         type: string
       work-dir:
         type: string
-    docker:
-      - image: cimg/base:stable
     steps:
-      - when:
-          condition:
-            equal:
-              - velocity-proxy
-              - << parameters.repo-name >>
-          steps:
-            - run:
-                name: Check/Install Git LFS
-                command: |
-                  if ! git lfs version; then
-                    sudo apt-get update && sudo apt-get install git-lfs
-                  fi
-      - checkout
-      - setup_remote_docker:
-          version: 20.10.7
-      - docker/check
       - run:
-          name: Configure Builder
-          command: docker buildx create --driver docker-container --use
-      - run:
-          name: build
+          name: << parameters.repo-name >> - build
           working_directory: << parameters.work-dir >>
           command: >-
             docker buildx build
@@ -59,36 +41,52 @@ jobs:
             --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:latest
             .
       - run:
-          name: Install and run container-structure-test
+          name: << parameters.repo-name >> - container-structure-test
           working_directory: << parameters.work-dir >>
+          command: >-
+            container-structure-test test
+              --image ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>
+              --config container-structure-test.yaml
+      - docker/push:
+          step-name: << parameters.repo-name >> - push
+          image: ${DOCKER_LOGIN}/<< parameters.repo-name >>
+          tag: << parameters.version >>-<< pipeline.number >>,<< parameters.version >>,latest
+  install-cst:
+    steps:
+      - run:
+          name: Install container-structure-test
           command: |
             destFile="${HOME}/bin/container-structure-test"
             mkdir -p "${HOME}/bin"
             curl -L -o "${destFile}" \
               https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
             chmod +x "${destFile}"
-            ${destFile} test \
-              --image ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >> \
-              --config container-structure-test.yaml
-      - docker/push:
-          image: ${DOCKER_LOGIN}/<< parameters.repo-name >>
-          tag: << parameters.version >>-<< pipeline.number >>,<< parameters.version >>,latest
+  ensure-git-lfs:
+    steps:
+      - run:
+          name: Check/Install Git LFS
+          command: |
+            if ! git lfs version; then
+              sudo apt-get update && sudo apt-get install git-lfs
+            fi
 
-workflows:
-  version: 2
-  container-build:
-    jobs:
+jobs:
+  build:
+    machine:
+      image: ubuntu-2004:202111-01
+    steps:
+      - ensure-git-lfs
+      - checkout
+      - docker/check
+      - install-cst
+      - configure-buildx
       - buildx:
-          name: bedrock-connect
-          context: DockerHub
           repo-name: bedrock-connect
           version: "1.12"
           work-dir: bedrock-connect
       - buildx:
-          name: minecraft-java
-          context: DockerHub
-          platforms: linux/amd64
           repo-name: minecraft-java
+          platforms: linux/amd64
           version: "1.17.1"
           work-dir: minecraft-java
           extra-args: >-
@@ -96,8 +94,6 @@ workflows:
             --build-arg VIAVERSION=4.1.1
             --build-arg BETTER_SLEEP=4.0.0
       - buildx:
-          name: velocity-proxy
-          context: DockerHub
           repo-name: velocity-proxy
           version: "3.1.1"
           work-dir: velocity-proxy
@@ -105,3 +101,10 @@ workflows:
             --build-arg BUILD_ID=98
             --build-arg GEYSER_BUILD=960
             --build-arg LOODGATE_BUILD=53
+
+workflows:
+  version: 2
+  container-build:
+    jobs:
+      - build:
+          context: DockerHub
