@@ -6,7 +6,7 @@ orbs:
 commands:
   configure-buildx:
     steps:
-      - run: docker buildx create --driver docker-container --use
+      - run: docker buildx create --driver docker-container --name container --node container0 --use
   buildx:
     parameters:
       extra-args:
@@ -27,6 +27,7 @@ commands:
           working_directory: << parameters.work-dir >>
           command: >-
             docker buildx build
+            --builder container
             --progress plain
             --load
             --platform << parameters.platforms >>
