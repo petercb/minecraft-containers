@@ -21,10 +21,19 @@ jobs:
     docker:
       - image: cimg/base:stable
     steps:
+      - when:
+          condition:
+            equal:
+              - velocity-proxy
+              - << parameters.repo-name >>
+          steps:
+            - run:
+                name: Check/Install Git LFS
+                command: |
+                  if ! git lfs version; then
+                    sudo apt-get update && sudo apt-get install git-lfs
+                  fi
       - checkout
-      - run:
-          name: Check Git LFS
-          command: git lfs version
       - setup_remote_docker:
           version: 20.10.7
       - docker/check
