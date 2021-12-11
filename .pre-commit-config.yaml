@@ -22,6 +22,6 @@ repos:
         name: CircleCI Config validate
         language: system
         entry: circleci config validate
-        files: .circleci/config.yml
+        files: '\.circleci/config\.yml'
         stages:
           - commit

@@ -68,7 +68,7 @@ workflows:
           context: DockerHub
           repo-name: bedrock-connect
           version: "1.12"
-          work-dir: bedrockconnect
+          work-dir: bedrock-connect
       - buildx:
           name: minecraft-java
           context: DockerHub
