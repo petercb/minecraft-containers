@@ -46,9 +46,9 @@ commands:
           working_directory: << parameters.work-dir >>
           command: >-
             container-structure-test test
-              --image ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>-<< pipeline.number >>
-              --config container-structure-test.yaml
-              --pull
+            --image ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>-<< pipeline.number >>
+            --config container-structure-test.yaml
+            --pull
   install-cst:
     steps:
       - run:
