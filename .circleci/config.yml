@@ -29,7 +29,7 @@ commands:
             docker buildx build
             --builder container
             --progress plain
-            --load
+            --push
             --platform << parameters.platforms >>
             --build-arg VERSION=<< parameters.version >>
             <<# parameters.extra-args >>
@@ -46,12 +46,9 @@ commands:
           working_directory: << parameters.work-dir >>
           command: >-
             container-structure-test test
-              --image ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>
+              --image ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>-<< pipeline.number >>
               --config container-structure-test.yaml
-      - docker/push:
-          step-name: << parameters.repo-name >> - push
-          image: ${DOCKER_LOGIN}/<< parameters.repo-name >>
-          tag: << parameters.version >>-<< pipeline.number >>,<< parameters.version >>,latest
+              --pull
   install-cst:
     steps:
       - run:
@@ -100,8 +97,6 @@ jobs:
           work-dir: velocity-proxy
           extra-args: >-
             --build-arg BUILD_ID=98
-            --build-arg GEYSER_BUILD=960
-            --build-arg LOODGATE_BUILD=53
 
 workflows:
   version: 2
