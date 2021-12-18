@@ -35,7 +35,9 @@ commands:
           name: Retrieve version
           working_directory: << parameters.work-dir >>
           command: |
-            echo 'export VERSION=$(grep 'ARG VERSION=' Dockerfile | cut -d= -f2)' >> ${BASH_ENV}
+            VERSION="$(grep 'ARG VERSION=' Dockerfile | cut -d= -f2)"
+            echo "${VERSION}"
+            echo "export VERSION=${VERSION}" >> "${BASH_ENV}"
       - run:
           name: << parameters.repo-name >> - build
           working_directory: << parameters.work-dir >>

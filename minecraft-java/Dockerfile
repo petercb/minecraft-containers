@@ -1,7 +1,7 @@
 FROM azul/zulu-openjdk-alpine:17.0.1-jre-headless
 
 ARG VERSION=1.17.1
-ARG BUILD_ID=399
+ARG BUILD_ID=401
 
 ARG VIAVERSION=4.1.1
 ARG BETTER_SLEEP=4.0.0
@@ -15,7 +15,9 @@ EXPOSE 25575
 
 COPY entrypoint.sh /
 
-RUN chmod a=r /minecraft.jar /plugins/*.jar
+RUN \
+    chmod a=r /minecraft.jar /plugins/*.jar && \
+    echo "core: ${VERSION}" > /VERSION.txt
 
 USER 1000
 
