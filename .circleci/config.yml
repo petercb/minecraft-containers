@@ -10,5 +10,6 @@ workflows:
           config-path: .circleci/continue_config.yml
           mapping: |
             bedrock-connect/.* build-brc true
+            minecraft-bedrock/.* build-mb true
             minecraft-java/.* build-mj true
             velocity-proxy/.* build-velocity true

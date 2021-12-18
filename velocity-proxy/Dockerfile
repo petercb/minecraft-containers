@@ -10,7 +10,9 @@ COPY floodgate-velocity.jar /plugins/floodgate.jar
 
 COPY entrypoint.sh /
 
-RUN chmod a=r /velocity.jar /plugins/*.jar
+RUN \
+    chmod a=r /velocity.jar /plugins/*.jar && \
+    echo "core: ${VERSION}" > /VERSION.txt
 
 EXPOSE 25577
 EXPOSE 19132/udp

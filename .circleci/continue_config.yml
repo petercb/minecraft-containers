@@ -10,6 +10,9 @@ parameters:
   build-mj:
     type: boolean
     default: false
+  build-mb:
+    type: boolean
+    default: false
   build-velocity:
     type: boolean
     default: false
@@ -136,6 +139,14 @@ jobs:
             - buildx:
                 repo-name: bedrock-connect
                 work-dir: bedrock-connect
+      - when:
+          condition: << pipeline.parameters.build-mb >>
+          steps:
+            - buildx:
+                repo-name: minecraft-bedrock-server
+                platforms: linux/amd64
+                work-dir: minecraft-bedrock
+                extra-args: --target runtime
       - when:
           condition: << pipeline.parameters.build-mj >>
           steps:
