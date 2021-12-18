@@ -1,0 +1,157 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@2.0.1
+
+parameters:
+  build-brc:
+    type: boolean
+    default: false
+  build-mj:
+    type: boolean
+    default: false
+  build-velocity:
+    type: boolean
+    default: false
+
+commands:
+  configure-buildx:
+    steps:
+      - run: docker buildx create --driver docker-container --name container --node container0 --use
+  buildx:
+    parameters:
+      extra-args:
+        type: string
+        default: ""
+      platforms:
+        type: string
+        default: linux/arm64/v8,linux/amd64
+      repo-name:
+        type: string
+      work-dir:
+        type: string
+    steps:
+      - run:
+          name: Retrieve version
+          working_directory: << parameters.work-dir >>
+          command: |
+            echo 'export VERSION=$(grep 'ARG VERSION=' Dockerfile | cut -d= -f2)' >> ${BASH_ENV}
+      - run:
+          name: << parameters.repo-name >> - build
+          working_directory: << parameters.work-dir >>
+          command: >-
+            docker buildx build
+            --builder container
+            --progress plain
+            --push
+            --platform << parameters.platforms >>
+            <<# parameters.extra-args >>
+            << parameters.extra-args >>
+            <</ parameters.extra-args >>
+            --cache-from ${DOCKER_LOGIN}/<< parameters.repo-name >>:cache
+            --cache-to ${DOCKER_LOGIN}/<< parameters.repo-name >>:cache
+            --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:$VERSION-<< pipeline.number >>
+            .
+      - run:
+          name: << parameters.repo-name >> - container-structure-test
+          working_directory: << parameters.work-dir >>
+          command: >-
+            container-structure-test test
+            --image ${DOCKER_LOGIN}/<< parameters.repo-name >>:$VERSION-<< pipeline.number >>
+            --config container-structure-test.yaml
+            --pull
+      - run:
+          name: << parameters.repo-name >> - Delete image
+          when: on_fail
+          command: |
+            REG='https://docker.io'
+            CREDS="Authorization: Basic $(echo -n ${DOCKER_LOGIN}:${DOCKER_PASSWORD}|base64)"
+            repo=${DOCKER_LOGIN}/<< parameters.repo-name >>
+            tag=${VERSION}-<< pipeline.number >>
+            response=$(curl --header "${CREDS}" -v -s -H "Accept:application/vnd.docker.distribution.manifest.v2+json" "${REG}/v2/$repo/manifests/$tag" 2>&1)
+            digest=$(echo "$response" | grep -i "< Docker-Content-Digest:"|awk '{print $3}' || echo "")
+            [ -z "$digest" ] &&
+              response=$(curl --header "${CREDS}" -v -s -H "Accept:application/vnd.oci.image.manifest.v1+json" "${REG}/v2/$repo/manifests/$tag" 2>&1) &&
+              digest=$(echo "$response" | grep -i "< Docker-Content-Digest:"|awk '{print $3}')
+            digest=${digest//[$'\t\r\n']}
+            echo "DIGEST: $digest"
+            result=$(curl --header "${CREDS}" -s -o /dev/null -w "%{http_code}" -H "Accept:application/vnd.docker.distribution.manifest.v2+json" -X DELETE "${REG}/v2/$repo/manifests/$digest")
+            if [ "$result" -eq 202 ]; then
+              echo "Successfully deleted"
+              exit 0
+            else
+              echo "Failed to delete: $result"
+              exit 3
+            fi
+      - run:
+          name: << parameters.repo-name >> - build latest and version tags
+          working_directory: << parameters.work-dir >>
+          command: >-
+            docker buildx build
+            --builder container
+            --progress plain
+            --push
+            --platform << parameters.platforms >>
+            <<# parameters.extra-args >>
+            << parameters.extra-args >>
+            <</ parameters.extra-args >>
+            --cache-from ${DOCKER_LOGIN}/<< parameters.repo-name >>:cache
+            --cache-to ${DOCKER_LOGIN}/<< parameters.repo-name >>:cache
+            --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:$VERSION
+            --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:latest
+            .
+  install-cst:
+    steps:
+      - run:
+          name: Install container-structure-test
+          command: |
+            destFile="${HOME}/bin/container-structure-test"
+            mkdir -p "${HOME}/bin"
+            curl -L -o "${destFile}" \
+              https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+            chmod +x "${destFile}"
+  ensure-git-lfs:
+    steps:
+      - run:
+          name: Check/Install Git LFS
+          command: |
+            if ! git lfs version; then
+              sudo apt-get update && sudo apt-get install git-lfs
+            fi
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-2004:202111-01
+    steps:
+      - checkout
+      - docker/check
+      - install-cst
+      - configure-buildx
+      - when:
+          condition: << pipeline.parameters.build-brc >>
+          steps:
+            - buildx:
+                repo-name: bedrock-connect
+                work-dir: bedrock-connect
+      - when:
+          condition: << pipeline.parameters.build-mj >>
+          steps:
+            - buildx:
+                repo-name: minecraft-java
+                platforms: linux/amd64
+                work-dir: minecraft-java
+      - when:
+          condition: << pipeline.parameters.build-velocity >>
+          steps:
+            - ensure-git-lfs
+            - buildx:
+                repo-name: velocity-proxy
+                work-dir: velocity-proxy
+
+workflows:
+  version: 2
+  container-build:
+    jobs:
+      - build:
+          context: DockerHub

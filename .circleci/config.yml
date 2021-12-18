@@ -1,106 +1,14 @@
 version: 2.1
-
+setup: true
 orbs:
-  docker: circleci/docker@2.0.1
-
-commands:
-  configure-buildx:
-    steps:
-      - run: docker buildx create --driver docker-container --name container --node container0 --use
-  buildx:
-    parameters:
-      extra-args:
-        type: string
-        default: ""
-      platforms:
-        type: string
-        default: linux/arm64/v8,linux/amd64
-      repo-name:
-        type: string
-      version:
-        type: string
-      work-dir:
-        type: string
-    steps:
-      - run:
-          name: << parameters.repo-name >> - build
-          working_directory: << parameters.work-dir >>
-          command: >-
-            docker buildx build
-            --builder container
-            --progress plain
-            --push
-            --platform << parameters.platforms >>
-            --build-arg VERSION=<< parameters.version >>
-            <<# parameters.extra-args >>
-            << parameters.extra-args >>
-            <</ parameters.extra-args >>
-            --cache-from ${DOCKER_LOGIN}/<< parameters.repo-name >>:cache
-            --cache-to ${DOCKER_LOGIN}/<< parameters.repo-name >>:cache
-            --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>-<< pipeline.number >>
-            --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>
-            --tag ${DOCKER_LOGIN}/<< parameters.repo-name >>:latest
-            .
-      - run:
-          name: << parameters.repo-name >> - container-structure-test
-          working_directory: << parameters.work-dir >>
-          command: >-
-            container-structure-test test
-            --image ${DOCKER_LOGIN}/<< parameters.repo-name >>:<< parameters.version >>-<< pipeline.number >>
-            --config container-structure-test.yaml
-            --pull
-  install-cst:
-    steps:
-      - run:
-          name: Install container-structure-test
-          command: |
-            destFile="${HOME}/bin/container-structure-test"
-            mkdir -p "${HOME}/bin"
-            curl -L -o "${destFile}" \
-              https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
-            chmod +x "${destFile}"
-  ensure-git-lfs:
-    steps:
-      - run:
-          name: Check/Install Git LFS
-          command: |
-            if ! git lfs version; then
-              sudo apt-get update && sudo apt-get install git-lfs
-            fi
-
-jobs:
-  build:
-    machine:
-      image: ubuntu-2004:202111-01
-    steps:
-      - ensure-git-lfs
-      - checkout
-      - docker/check
-      - install-cst
-      - configure-buildx
-      - buildx:
-          repo-name: bedrock-connect
-          version: "1.12"
-          work-dir: bedrock-connect
-      - buildx:
-          repo-name: minecraft-java
-          platforms: linux/amd64
-          version: "1.17.1"
-          work-dir: minecraft-java
-          extra-args: >-
-            --build-arg BUILD_ID=399
-            --build-arg VIAVERSION=4.1.1
-            --build-arg BETTER_SLEEP=4.0.0
-      - buildx:
-          repo-name: velocity-proxy
-          version: "3.1.1"
-          work-dir: velocity-proxy
-          extra-args: >-
-            --build-arg BUILD_ID=98
-
+  path-filtering: circleci/path-filtering@0.0.2
 workflows:
-  version: 2
-  container-build:
+  generate-config:
     jobs:
-      - build:
-          context: DockerHub
+      - path-filtering/filter:
+          base-revision: master
+          config-path: .circleci/continue-config.yml
+          mapping: |
+            bedrock-connect/.* build-brc true
+            minecraft-java/.* build-mj true
+            velocity-proxy/.* build-velocity true
