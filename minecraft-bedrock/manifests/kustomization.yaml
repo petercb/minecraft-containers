@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonLabels:
+  app: minecraft-bedrock
+
+namespace: minecraft-bedrock
+
+configMapGenerator:
+  - name: minecraft-bedrock
+    literals:
+      - EULA=TRUE
+
+resources:
+  - namespace.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
