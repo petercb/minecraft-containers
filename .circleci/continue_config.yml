@@ -66,29 +66,6 @@ commands:
             --config container-structure-test.yaml
             --pull
       - run:
-          name: << parameters.repo-name >> - Delete image
-          when: on_fail
-          command: |
-            REG='https://docker.io'
-            CREDS="Authorization: Basic $(echo -n ${DOCKER_LOGIN}:${DOCKER_PASSWORD}|base64)"
-            repo=${DOCKER_LOGIN}/<< parameters.repo-name >>
-            tag=${VERSION}-<< pipeline.number >>
-            response=$(curl --header "${CREDS}" -v -s -H "Accept:application/vnd.docker.distribution.manifest.v2+json" "${REG}/v2/$repo/manifests/$tag" 2>&1)
-            digest=$(echo "$response" | grep -i "< Docker-Content-Digest:"|awk '{print $3}' || echo "")
-            [ -z "$digest" ] &&
-              response=$(curl --header "${CREDS}" -v -s -H "Accept:application/vnd.oci.image.manifest.v1+json" "${REG}/v2/$repo/manifests/$tag" 2>&1) &&
-              digest=$(echo "$response" | grep -i "< Docker-Content-Digest:"|awk '{print $3}')
-            digest=${digest//[$'\t\r\n']}
-            echo "DIGEST: $digest"
-            result=$(curl --header "${CREDS}" -s -o /dev/null -w "%{http_code}" -H "Accept:application/vnd.docker.distribution.manifest.v2+json" -X DELETE "${REG}/v2/$repo/manifests/$digest")
-            if [ "$result" -eq 202 ]; then
-              echo "Successfully deleted"
-              exit 0
-            else
-              echo "Failed to delete: $result"
-              exit 3
-            fi
-      - run:
           name: << parameters.repo-name >> - build latest and version tags
           working_directory: << parameters.work-dir >>
           command: >-

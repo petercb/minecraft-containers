@@ -13,12 +13,18 @@ RUN apt-get update \
         unzip \
     && rm -rf /var/lib/apt/lists/*
 
+COPY property-definitions.json bds-property-definitions.json
+RUN chmod a=r bds-property-definitions.json
+
 # Extract bedrock server
 WORKDIR /bedrock
 RUN \
-    unzip /tmp/server.zip \
-    && chmod +x bedrock_server \
-    && rm -f ./*.debug
+    unzip /tmp/server.zip && \
+    chmod +x bedrock_server && \
+    rm -f ./*.debug && \
+    mkdir -p worlds && \
+    chown -R 1000 server.properties worlds
+
 
 FROM itzg/set-property:0.1.1 AS set-property
 
@@ -29,14 +35,15 @@ FROM debian:11.1-slim AS runtime
 COPY --from=set-property /set-property /bin/set-property
 
 COPY entrypoint.sh /entrypoint.sh
-COPY property-definitions.json /etc/bds-property-definitions.json
+COPY --from=build /tmp/bds-property-definitions.json /etc/bds-property-definitions.json
 COPY --from=build /bedrock /bedrock
 
 # hadolint ignore=DL3008
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        libcurl4 \
-    && rm -rf /var/lib/apt/lists/*
+RUN \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libcurl4 && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN echo "core: ${VERSION}" > /VERSION.txt
 

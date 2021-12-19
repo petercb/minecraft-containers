@@ -1,0 +1,26 @@
+---
+schemaVersion: '2.0.0'
+
+metadataTest:
+  exposedPorts:
+    - "19132"
+  user: "1000"
+  workdir: "/bedrock"
+
+fileExistenceTests:
+  - name: entrypoint
+    path: "/entrypoint.sh"
+    shouldExist: true
+    isExecutableBy: "any"
+  - name: bedrock_server
+    path: "/bedrock/bedrock_server"
+    shouldExist: true
+    isExecutableBy: "any"
+  - name: set-property
+    path: "/bin/set-property"
+    shouldExist: true
+    isExecutableBy: "any"
+  - name: bds-property-definition
+    path: "/etc/bds-property-definitions.json"
+    permissions: "-r--r--r--"
+    shouldExist: true
