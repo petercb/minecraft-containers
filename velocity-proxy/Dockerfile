@@ -1,7 +1,7 @@
 FROM openjdk:17.0.1-slim-buster
 
-ARG VERSION=3.1.1
-ARG BUILD_ID=98
+ARG VERSION=3.1.2-SNAPSHOT
+ARG BUILD_ID=110
 
 ADD https://papermc.io/api/v2/projects/velocity/versions/${VERSION}/builds/${BUILD_ID}/downloads/velocity-${VERSION}-${BUILD_ID}.jar /velocity.jar
 
