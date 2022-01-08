@@ -23,6 +23,10 @@ fileExistenceTests:
     path: "/plugins/BetterSleeping.jar"
     permissions: "-r--r--r--"
     shouldExist: true
+  - name: ViaVersion
+    path: "/plugins/ViaVersion.jar"
+    permissions: "-r--r--r--"
+    shouldExist: true
 
 commandTests:
   - name: "java"
