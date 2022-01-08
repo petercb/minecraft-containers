@@ -110,6 +110,10 @@ jobs:
     machine:
       image: ubuntu-2004:202111-01
     steps:
+      - when:
+          condition: << pipeline.parameters.build-velocity >>
+          steps:
+            - ensure-git-lfs
       - checkout
       - docker/check
       - install-cst
@@ -138,7 +142,6 @@ jobs:
       - when:
           condition: << pipeline.parameters.build-velocity >>
           steps:
-            - ensure-git-lfs
             - buildx:
                 repo-name: velocity-proxy
                 work-dir: velocity-proxy

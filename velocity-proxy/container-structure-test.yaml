@@ -26,6 +26,16 @@ fileExistenceTests:
     permissions: "-r--r--r--"
     shouldExist: true
 
+fileContentTests:
+  - name: Geyser jar
+    path: "/plugins/geyser.jar"
+    excludedContents:
+      - 'version\s+https'
+  - name: Floodgate jar
+    path: "/plugins/floodgate.jar"
+    excludedContents:
+      - 'version\s+https'
+
 commandTests:
   - name: "java"
     command: "java"
