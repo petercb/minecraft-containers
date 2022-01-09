@@ -68,7 +68,7 @@ commands:
             --output junit
             --test-report << parameters.repo-name >>-cst-results.xml
       - store_test_results:
-          path: << parameters.repo-name >>-cst-results.xml
+          path: << parameters.work-dir >>/<< parameters.repo-name >>-cst-results.xml
       - run:
           name: << parameters.repo-name >> - build latest and version tags
           working_directory: << parameters.work-dir >>
