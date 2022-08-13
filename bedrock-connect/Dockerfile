@@ -1,6 +1,6 @@
-FROM openjdk:17.0.1-slim-buster
+FROM amazoncorretto:17.0.4
 
-ARG VERSION=1.12.1
+ARG VERSION=1.21
 
 ADD https://github.com/Pugmatt/BedrockConnect/releases/download/${VERSION}/BedrockConnect-1.0-SNAPSHOT.jar /BedrockConnect.jar
 
