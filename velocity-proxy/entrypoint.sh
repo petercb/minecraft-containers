@@ -10,7 +10,8 @@ done
 
 command="java"
 if [ -z "${JAVA_OPTS}" ] ; then
-    command="${command} -XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+ParallelRefProcEnabled -XX:+AlwaysPreTouch -XX:MaxInlineLevel=15"
+    command="${command} -XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+UnlockExperimentalVMOptions -XX:+ParallelRefProcEnabled \
+        -XX:+AlwaysPreTouch -XX:MaxInlineLevel=15"
 else
     command="${command} ${JAVA_OPTS}"
 fi
