@@ -1,9 +1,9 @@
-FROM amazoncorretto:17.0.4
+FROM amazoncorretto:17.0.6
 
-ARG VERSION=3.1.2-SNAPSHOT
-ARG BUILD_ID=172
+ARG VERSION=3.2.0-SNAPSHOT
+ARG BUILD_ID=247
 
-ADD https://papermc.io/api/v2/projects/velocity/versions/${VERSION}/builds/${BUILD_ID}/downloads/velocity-${VERSION}-${BUILD_ID}.jar /velocity.jar
+ADD https://api.papermc.io/v2/projects/velocity/versions/${VERSION}/builds/${BUILD_ID}/downloads/velocity-${VERSION}-${BUILD_ID}.jar /velocity.jar
 
 COPY Geyser-Velocity.jar /plugins/geyser.jar
 COPY floodgate-velocity.jar /plugins/floodgate.jar

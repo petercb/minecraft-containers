@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Running in $(pwd)"
 
 echo "Initializing plugins"
+shopt -s nullglob
 mkdir -p plugins
 for plugin in /plugins/*.jar ; do
     ln -sfv "${plugin}" plugins/

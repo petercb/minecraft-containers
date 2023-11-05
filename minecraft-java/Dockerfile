@@ -1,4 +1,4 @@
-FROM amazoncorretto:17.0.4
+FROM amazoncorretto:17.0.6
 
 ARG VERSION=1.19.4
 ARG BUILD_ID=484
