@@ -1,10 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Running in $(pwd)"
 echo "Accepting the EULA"
 echo "eula=true" > eula.txt
 
 echo "Initializing plugins"
+shopt -s nullglob
 mkdir -p plugins
 for plugin in /plugins/*.jar ; do
     ln -sfv "${plugin}" plugins/
