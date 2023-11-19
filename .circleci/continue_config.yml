@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  docker: circleci/docker@2.0.1
+  docker: circleci/docker@2
 
 parameters:
   build-brc:
@@ -108,7 +108,7 @@ commands:
 jobs:
   build:
     machine:
-      image: ubuntu-2004:202111-01
+      image: ubuntu-2204:current
     steps:
       - when:
           condition: << pipeline.parameters.build-velocity >>

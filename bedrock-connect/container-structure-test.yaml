@@ -20,4 +20,4 @@ commandTests:
       - "-version"
     expectedError:
       - 'OpenJDK 64-Bit'
-      - 'build 17\.0\.'
+      - 'build 17\.'

@@ -1,9 +1,9 @@
-FROM debian:11.1-slim AS build
+FROM debian:12-slim AS build
 
 WORKDIR /tmp
 
 # Download Bedrock server
-ARG VERSION=1.18.2.03
+ARG VERSION=1.20.41.02
 ADD https://minecraft.azureedge.net/bin-linux/bedrock-server-${VERSION}.zip server.zip
 
 # Install unzip
@@ -29,7 +29,7 @@ RUN \
 FROM itzg/set-property:0.1.1 AS set-property
 
 ## Runtime
-FROM debian:11.1-slim AS runtime
+FROM debian:12-slim AS runtime
 
 # Add set-property bin
 COPY --from=set-property /set-property /bin/set-property

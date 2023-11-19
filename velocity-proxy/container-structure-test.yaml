@@ -25,6 +25,10 @@ fileExistenceTests:
     path: "/plugins/floodgate.jar"
     permissions: "-r--r--r--"
     shouldExist: true
+  - name: ViaVersion
+    path: "/plugins/ViaVersion.jar"
+    permissions: "-r--r--r--"
+    shouldExist: true
 
 fileContentTests:
   - name: Geyser jar
@@ -43,4 +47,4 @@ commandTests:
       - "-version"
     expectedError:
       - 'OpenJDK 64-Bit'
-      - 'build 17\.0\.'
+      - 'build 17\.'
