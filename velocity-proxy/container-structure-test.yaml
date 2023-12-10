@@ -29,6 +29,10 @@ fileExistenceTests:
     path: "/plugins/ViaVersion.jar"
     permissions: "-r--r--r--"
     shouldExist: true
+  - name: ViaBackwards
+    path: "/plugins/ViaBackwards.jar"
+    permissions: "-r--r--r--"
+    shouldExist: true
 
 fileContentTests:
   - name: Geyser jar
