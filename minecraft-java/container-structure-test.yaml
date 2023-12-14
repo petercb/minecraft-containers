@@ -19,10 +19,6 @@ fileExistenceTests:
     path: "/minecraft.jar"
     permissions: "-r--r--r--"
     shouldExist: true
-  - name: BetterSleep
-    path: "/plugins/BetterSleeping.jar"
-    permissions: "-r--r--r--"
-    shouldExist: true
 
 commandTests:
   - name: "java"
