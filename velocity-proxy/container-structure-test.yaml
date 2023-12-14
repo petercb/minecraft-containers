@@ -17,32 +17,6 @@ fileExistenceTests:
     path: "/velocity.jar"
     permissions: "-r--r--r--"
     shouldExist: true
-  - name: geyser
-    path: "/plugins/geyser.jar"
-    permissions: "-r--r--r--"
-    shouldExist: true
-  - name: floodgate
-    path: "/plugins/floodgate.jar"
-    permissions: "-r--r--r--"
-    shouldExist: true
-  - name: ViaVersion
-    path: "/plugins/ViaVersion.jar"
-    permissions: "-r--r--r--"
-    shouldExist: true
-  - name: ViaBackwards
-    path: "/plugins/ViaBackwards.jar"
-    permissions: "-r--r--r--"
-    shouldExist: true
-
-fileContentTests:
-  - name: Geyser jar
-    path: "/plugins/geyser.jar"
-    excludedContents:
-      - 'version\s+https'
-  - name: Floodgate jar
-    path: "/plugins/floodgate.jar"
-    excludedContents:
-      - 'version\s+https'
 
 commandTests:
   - name: "java"

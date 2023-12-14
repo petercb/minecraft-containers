@@ -2,13 +2,6 @@
 
 echo "Running in $(pwd)"
 
-echo "Initializing plugins"
-shopt -s nullglob
-mkdir -p plugins
-for plugin in /plugins/*.jar ; do
-    ln -sfv "${plugin}" plugins/
-done
-
 command="java"
 if [ -z "${JAVA_OPTS}" ] ; then
     command="${command} -XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+UnlockExperimentalVMOptions -XX:+ParallelRefProcEnabled \
