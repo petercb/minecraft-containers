@@ -3,7 +3,7 @@ FROM debian:12-slim AS build
 WORKDIR /tmp
 
 # Download Bedrock server
-ARG VERSION=1.20.41.02
+ARG VERSION=1.20.51.01
 ADD https://minecraft.azureedge.net/bin-linux/bedrock-server-${VERSION}.zip server.zip
 
 # Install unzip
