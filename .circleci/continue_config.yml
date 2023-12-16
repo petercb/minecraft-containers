@@ -137,7 +137,6 @@ jobs:
           steps:
             - buildx:
                 repo-name: minecraft-java
-                platforms: linux/amd64
                 work-dir: minecraft-java
       - when:
           condition: << pipeline.parameters.build-velocity >>
