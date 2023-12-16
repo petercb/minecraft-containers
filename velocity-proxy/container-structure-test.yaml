@@ -4,7 +4,6 @@ schemaVersion: '2.0.0'
 metadataTest:
   exposedPorts:
     - "25577"
-    - "19132"
   user: "1000"
   workdir: "/velocity"
 

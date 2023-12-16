@@ -12,7 +12,6 @@ RUN \
     echo "core: ${VERSION}" > /VERSION.txt
 
 EXPOSE 25577
-EXPOSE 19132/udp
 
 USER 1000
 
