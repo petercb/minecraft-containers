@@ -1,6 +1,6 @@
 # Minecraft Java Server
 
-Run a Minecarft Java Edition dedicated server in a container.
+Run a Minecraft Java Edition dedicated server in a container.
 
 Currently using [PaperMC](https://papermc.io/)
 

@@ -1,7 +1,7 @@
 FROM amazoncorretto:17
 
-ARG VERSION=1.20.2
-ARG BUILD_ID=318
+ARG VERSION=1.20.4
+ARG BUILD_ID=385
 
 ADD https://api.papermc.io/v2/projects/paper/versions/${VERSION}/builds/${BUILD_ID}/downloads/paper-${VERSION}-${BUILD_ID}.jar /minecraft.jar
 
