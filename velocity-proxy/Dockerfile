@@ -1,4 +1,4 @@
-FROM amazoncorretto:21
+FROM amazoncorretto:21-alpine
 
 ARG VERSION=3.3.0-SNAPSHOT
 ARG BUILD_ID=377
