@@ -1,6 +1,6 @@
-FROM amazoncorretto:17
+FROM amazoncorretto:21
 
-ARG VERSION=1.40
+ARG VERSION=1.42
 
 ADD https://github.com/Pugmatt/BedrockConnect/releases/download/${VERSION}/BedrockConnect-1.0-SNAPSHOT.jar /BedrockConnect.jar
 
