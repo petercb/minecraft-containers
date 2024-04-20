@@ -1,7 +1,7 @@
-FROM amazoncorretto:17
+FROM amazoncorretto:21
 
 ARG VERSION=3.3.0-SNAPSHOT
-ARG BUILD_ID=320
+ARG BUILD_ID=377
 
 ADD https://api.papermc.io/v2/projects/velocity/versions/${VERSION}/builds/${BUILD_ID}/downloads/velocity-${VERSION}-${BUILD_ID}.jar /velocity.jar
 
