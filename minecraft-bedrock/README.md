@@ -1,13 +1,15 @@
 # Minecraft Bedrock Server
+
 Run a Minecraft dedicated server in a container.
 
 ## Introduction
+
 This Docker image packages a specific version of Minecraft Bedrock server and allows it to be configured by environment variables.
 
 ## Usage
 
 ```bash
-docker run -d -e EULA=TRUE -p 19132:19132/udp --name minecraft petercb/minecraft-bedrock-server
+docker run -d -e EULA=TRUE -p 19132:19132/udp --name minecraft-bedrock petercb/minecraft-bedrock
 ```
 
 ## Environment Variables
