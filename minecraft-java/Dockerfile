@@ -1,4 +1,6 @@
-FROM amazoncorretto:21
+# syntax=docker/dockerfile:1.7
+
+FROM amazoncorretto:21-alpine
 
 ARG VERSION=1.20.4
 ARG BUILD_ID=489
@@ -10,9 +12,12 @@ EXPOSE 25575
 
 COPY entrypoint.sh /
 
-RUN \
-    chmod a=r /minecraft.jar && \
+# hadolint ignore=DL3018
+RUN <<-EOF
+    apk --no-cache add libudev-zero
+    chmod a=r /minecraft.jar
     echo "core: ${VERSION}" > /VERSION.txt
+EOF
 
 USER 1000
 

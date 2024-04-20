@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Running in $(pwd)"
 echo "Accepting the EULA"
