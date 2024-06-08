@@ -1,6 +1,6 @@
 FROM amazoncorretto:21-alpine
 
-ARG VERSION=1.43
+ARG VERSION=1.44
 
 ADD https://github.com/Pugmatt/BedrockConnect/releases/download/${VERSION}/BedrockConnect-1.0-SNAPSHOT.jar /BedrockConnect.jar
 
