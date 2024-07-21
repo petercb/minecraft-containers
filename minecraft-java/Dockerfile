@@ -2,8 +2,8 @@
 
 FROM amazoncorretto:21-alpine
 
-ARG VERSION=1.20.6
-ARG BUILD_ID=137
+ARG VERSION=1.21
+ARG BUILD_ID=107
 
 ADD https://api.papermc.io/v2/projects/paper/versions/${VERSION}/builds/${BUILD_ID}/downloads/paper-${VERSION}-${BUILD_ID}.jar /minecraft.jar
 
