@@ -14,7 +14,7 @@ COPY entrypoint.sh /
 
 # hadolint ignore=DL3018
 RUN <<-EOF
-    apk --no-cache add libudev-zero
+    apk --no-cache add libudev-zero libstdc++
     chmod a=r /minecraft.jar
     echo "core: ${VERSION}" > /VERSION.txt
 EOF
