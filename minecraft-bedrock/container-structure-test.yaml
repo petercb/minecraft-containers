@@ -4,16 +4,18 @@ schemaVersion: '2.0.0'
 metadataTest:
   exposedPorts:
     - "19132"
-  user: "1000"
+  user: "nonroot"
   workdir: "/bedrock"
 
 fileExistenceTests:
   - name: entrypoint
     path: "/entrypoint.sh"
     shouldExist: true
+    permissions: "-r-xr-xr-x"
     isExecutableBy: "any"
   - name: bedrock_server
     path: "/bedrock/bedrock_server"
+    permissions: "-r-xr-xr-x"
     shouldExist: true
     isExecutableBy: "any"
   - name: set-property

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-if [[ "${EULA=FALSE}" != "TRUE" ]]; then
+if [ "${EULA=FALSE}" != "TRUE" ]; then
     echo
     echo "EULA must be set to TRUE to indicate agreement with the Minecraft End User License"
     echo "See https://minecraft.net/terms"

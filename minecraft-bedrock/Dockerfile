@@ -1,55 +1,52 @@
-FROM debian:12-slim AS build
+# syntax=docker/dockerfile:1
+
+# hadolint ignore=DL3006
+FROM cgr.dev/chainguard/wolfi-base AS build
 
 WORKDIR /tmp
 
 # Download Bedrock server
-ARG VERSION=1.20.81.01
+ARG VERSION=1.21.22.01
 ADD https://minecraft.azureedge.net/bin-linux/bedrock-server-${VERSION}.zip server.zip
 
 # Install unzip
-# hadolint ignore=DL3008
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        unzip \
-    && rm -rf /var/lib/apt/lists/*
+# hadolint ignore=DL3018
+RUN apk add --no-cache unzip
 
-COPY property-definitions.json bds-property-definitions.json
-RUN chmod a=r bds-property-definitions.json
+COPY --chmod=444 property-definitions.json bds-property-definitions.json
 
 # Extract bedrock server
 WORKDIR /bedrock
 RUN \
     unzip /tmp/server.zip && \
-    chmod +x bedrock_server && \
+    chmod 555 bedrock_server && \
     rm -f ./*.debug && \
     mkdir -p worlds && \
-    chown -R 1000 server.properties worlds
+    chown -R nonroot.nonroot server.properties worlds
 
 
 FROM itzg/set-property:0.1.1 AS set-property
 
 ## Runtime
-FROM debian:12-slim AS runtime
+# hadolint ignore=DL3006
+FROM cgr.dev/chainguard/wolfi-base AS runtime
 
 # Add set-property bin
 COPY --from=set-property /set-property /bin/set-property
 
-COPY entrypoint.sh /entrypoint.sh
+COPY --chmod=555 entrypoint.sh /entrypoint.sh
 COPY --from=build /tmp/bds-property-definitions.json /etc/bds-property-definitions.json
 COPY --from=build /bedrock /bedrock
 
-# hadolint ignore=DL3008
-RUN \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-        libcurl4 && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN echo "core: ${VERSION}" > /VERSION.txt
+# hadolint ignore=DL3018
+RUN <<-EOF
+    apk add --no-cache libcurl4
+    echo "core: ${VERSION}" > /VERSION.txt
+EOF
 
 EXPOSE 19132/udp
 
-USER 1000
+USER nonroot
 
 VOLUME /bedrock/worlds
 
