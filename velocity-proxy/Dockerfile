@@ -2,7 +2,7 @@
 
 FROM amazoncorretto:21-alpine
 
-ARG VERSION=3.3.0-SNAPSHOT
+ARG VERSION=3.4.0-SNAPSHOT
 ARG BUILD_ID=439
 
 ADD --chmod=444 https://api.papermc.io/v2/projects/velocity/versions/${VERSION}/builds/${BUILD_ID}/downloads/velocity-${VERSION}-${BUILD_ID}.jar /velocity.jar
