@@ -2,10 +2,11 @@
 
 FROM amazoncorretto:21-alpine
 
-ARG VERSION=1.21.4
-ARG BUILD_ID=222
+ARG PAPER_VERSION=1.21.4
+ARG BUILD_ID=230
+ARG VERSION="${PAPER_VERSION}-${BUILD_ID}"
 
-ADD --chmod=444 https://api.papermc.io/v2/projects/paper/versions/${VERSION}/builds/${BUILD_ID}/downloads/paper-${VERSION}-${BUILD_ID}.jar /minecraft.jar
+ADD --chmod=444 https://api.papermc.io/v2/projects/paper/versions/${PAPER_VERSION}/builds/${BUILD_ID}/downloads/paper-${PAPER_VERSION}-${BUILD_ID}.jar /minecraft.jar
 
 EXPOSE 25565
 EXPOSE 25575
@@ -15,7 +16,7 @@ COPY entrypoint.sh /
 # hadolint ignore=DL3018
 RUN <<-EOF
     apk --no-cache add libudev-zero libstdc++
-    echo "core: ${VERSION}" > /VERSION.txt
+    echo "core: ${PAPER_VERSION}" > /VERSION.txt
 EOF
 
 USER 1000
