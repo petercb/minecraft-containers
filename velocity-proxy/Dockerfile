@@ -2,14 +2,15 @@
 
 FROM amazoncorretto:21-alpine
 
-ARG VERSION=3.4.0-SNAPSHOT
-ARG BUILD_ID=483
+ARG VELOCITY_VERSION=3.4.0-SNAPSHOT
+ARG BUILD_ID=503
+ARG VERSION="${VELOCITY_VERSION}-${BUILD_ID}"
 
-ADD --chmod=444 https://api.papermc.io/v2/projects/velocity/versions/${VERSION}/builds/${BUILD_ID}/downloads/velocity-${VERSION}-${BUILD_ID}.jar /velocity.jar
+ADD --chmod=444 https://api.papermc.io/v2/projects/velocity/versions/${VELOCITY_VERSION}/builds/${BUILD_ID}/downloads/velocity-${VELOCITY_VERSION}-${BUILD_ID}.jar /velocity.jar
 
 COPY entrypoint.sh /
 
-RUN echo "core: ${VERSION}" > /VERSION.txt
+RUN echo "core: ${VELOCITY_VERSION}" > /VERSION.txt
 
 EXPOSE 25577
 
