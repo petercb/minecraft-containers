@@ -2,8 +2,8 @@
 
 FROM amazoncorretto:21-alpine
 
-ARG PAPER_VERSION=1.21.6
-ARG BUILD_ID=47
+ARG PAPER_VERSION=1.21.7
+ARG BUILD_ID=16
 ARG VERSION="${PAPER_VERSION}-${BUILD_ID}"
 
 ADD --chmod=444 https://api.papermc.io/v2/projects/paper/versions/${PAPER_VERSION}/builds/${BUILD_ID}/downloads/paper-${PAPER_VERSION}-${BUILD_ID}.jar /minecraft.jar
