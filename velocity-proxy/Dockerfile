@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1.7
 
-FROM amazoncorretto:21-alpine
+FROM amazoncorretto:25-alpine
 
 ARG VELOCITY_VERSION=3.4.0
-ARG BUILD_ID=522
+ARG BUILD_ID=540
 ARG VERSION="${VELOCITY_VERSION}-${BUILD_ID}"
 
 ADD --chmod=444 https://api.papermc.io/v2/projects/velocity/versions/${VELOCITY_VERSION}-SNAPSHOT/builds/${BUILD_ID}/downloads/velocity-${VELOCITY_VERSION}-SNAPSHOT-${BUILD_ID}.jar /velocity.jar

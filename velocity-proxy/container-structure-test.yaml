@@ -23,5 +23,4 @@ commandTests:
     args:
       - "-version"
     expectedError:
-      - 'OpenJDK 64-Bit'
-      - 'build 21\.'
+      - 'openjdk version "25"'
