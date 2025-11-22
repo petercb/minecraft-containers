@@ -23,4 +23,4 @@ commandTests:
     args:
       - "-version"
     expectedError:
-      - 'openjdk version "25"'
+      - 'Corretto-25\.'
