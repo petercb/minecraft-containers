@@ -6,8 +6,8 @@ FROM cgr.dev/chainguard/wolfi-base AS build
 WORKDIR /tmp
 
 # Download Bedrock server
-ARG VERSION=1.21.22.01
-ADD https://minecraft.azureedge.net/bin-linux/bedrock-server-${VERSION}.zip server.zip
+ARG VERSION=1.21.124.2
+ADD https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-${VERSION}.zip server.zip
 
 # Install unzip
 # hadolint ignore=DL3018
