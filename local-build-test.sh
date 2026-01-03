@@ -1,22 +1,22 @@
 #!/bin/bash
 
-set -e
-set -u
+set -eu
 
-function cleanup {
-    echo "Stopping builder"
-    docker buildx stop container
-}
-
-trap cleanup EXIT
-
-docker buildx create --driver docker-container --name container --node container0 --use
+export DOCKER_BUILDKIT=1
+export BUILDKIT_PROGRESS=plain
 
 for dockerfile in ${1:-*}/Dockerfile
 do
     image="$(dirname ${dockerfile})"
+    echo "Building ${image}"
     pushd "${image}"
-    docker buildx build --builder container --load --cache-from petercb/${image}:cache -t petercb/${image}:latest .
-    container-structure-test test --config container-structure-test.yaml --image petercb/${image}:latest
+    docker build \
+        --cache-from petercb/${image}:cache \
+        --tag petercb/${image}:latest \
+        --file Dockerfile \
+        .
+    container-structure-test test \
+        --config container-structure-test.yaml \
+        --image petercb/${image}:latest
     popd
 done

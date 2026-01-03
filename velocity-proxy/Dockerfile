@@ -3,10 +3,11 @@
 FROM amazoncorretto:25-alpine
 
 ARG VELOCITY_VERSION=3.4.0
-ARG BUILD_ID=558
+ARG BUILD_ID=559
 ARG VERSION="${VELOCITY_VERSION}-${BUILD_ID}"
+ARG UUID="ccc49f71751ece26568d3476392d6130c8b43f2e5f3a88313325b9278a52babd"
 
-ADD --chmod=444 https://api.papermc.io/v2/projects/velocity/versions/${VELOCITY_VERSION}-SNAPSHOT/builds/${BUILD_ID}/downloads/velocity-${VELOCITY_VERSION}-SNAPSHOT-${BUILD_ID}.jar /velocity.jar
+ADD --chmod=444 https://fill-data.papermc.io/v1/objects/${UUID}/velocity-${VELOCITY_VERSION}-SNAPSHOT-${BUILD_ID}.jar /velocity.jar
 
 COPY entrypoint.sh /
 
