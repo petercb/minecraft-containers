@@ -10,8 +10,11 @@ do
     image="$(dirname ${dockerfile})"
     echo "Building ${image}"
     pushd "${image}"
+    if [ -f build-env.sh ]; then
+        source build-env.sh
+    fi
+
     docker build \
-        --cache-from petercb/${image}:cache \
         --tag petercb/${image}:latest \
         --file Dockerfile \
         .

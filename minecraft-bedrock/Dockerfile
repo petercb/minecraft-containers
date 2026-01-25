@@ -13,16 +13,15 @@ ADD https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-${
 # hadolint ignore=DL3018
 RUN apk add --no-cache unzip
 
-COPY --chmod=444 property-definitions.json bds-property-definitions.json
-
 # Extract bedrock server
 WORKDIR /bedrock
-RUN \
-    unzip /tmp/server.zip && \
-    chmod 555 bedrock_server && \
-    rm -f ./*.debug && \
-    mkdir -p worlds && \
-    chown -R nonroot.nonroot server.properties worlds
+RUN <<-EOF
+    unzip /tmp/server.zip
+    chmod 555 bedrock_server
+    rm -f ./*.debug
+    mkdir -p worlds
+    chown -R nonroot:nonroot server.properties worlds
+EOF
 
 
 FROM itzg/set-property:0.1.1 AS set-property
@@ -35,7 +34,7 @@ FROM cgr.dev/chainguard/wolfi-base AS runtime
 COPY --from=set-property /set-property /bin/set-property
 
 COPY --chmod=555 entrypoint.sh /entrypoint.sh
-COPY --from=build /tmp/bds-property-definitions.json /etc/bds-property-definitions.json
+COPY --chmod=444 property-definitions.json /etc/bds-property-definitions.json
 COPY --from=build /bedrock /bedrock
 
 # hadolint ignore=DL3018
