@@ -6,7 +6,7 @@ FROM cgr.dev/chainguard/wolfi-base AS build
 WORKDIR /tmp
 
 # Download Bedrock server
-ARG VERSION=1.21.132.3
+ARG VERSION=1.26.0.2
 ADD https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-${VERSION}.zip server.zip
 
 # Install unzip
