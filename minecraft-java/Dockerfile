@@ -3,9 +3,9 @@
 FROM amazoncorretto:25-alpine
 
 ARG PAPER_VERSION=1.21.11
-ARG BUILD_ID=113
+ARG BUILD_ID=126
 ARG VERSION="${PAPER_VERSION}-${BUILD_ID}"
-ARG UUID="d99ef05d75304ca6a7808300354f4bcd7846e015f5c088f218113ed529d1b4f0"
+ARG UUID="367f5088c7cc5c8f83cbededf4760622d4a27425be45611d3db6f11c75fac901"
 
 ADD --chmod=444 https://fill-data.papermc.io/v1/objects/${UUID}/paper-${PAPER_VERSION}-${BUILD_ID}.jar /minecraft.jar
 
