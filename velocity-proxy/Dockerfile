@@ -3,9 +3,9 @@
 FROM amazoncorretto:25-alpine
 
 ARG VELOCITY_VERSION=3.5.0
-ARG BUILD_ID=590
+ARG BUILD_ID=593
 ARG VERSION="${VELOCITY_VERSION}-${BUILD_ID}"
-ARG UUID="bfc73a0de55af7cb114afd4153097a6894a256d28bedfd465f78cb96fbd2de23"
+ARG UUID="25bfbee6155fbce24f709bf18f1bb915817c4151d6d418ca01282742ab1f123a"
 
 ADD --chmod=444 https://fill-data.papermc.io/v1/objects/${UUID}/velocity-${VELOCITY_VERSION}-SNAPSHOT-${BUILD_ID}.jar /velocity.jar
 
