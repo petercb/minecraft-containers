@@ -26,4 +26,4 @@ commandTests:
     args:
       - "-version"
     expectedError:
-      - 'Corretto-25\.'
+      - 'Corretto-26\.'

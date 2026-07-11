@@ -1,11 +1,11 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1
 
-FROM amazoncorretto:25-alpine
+FROM amazoncorretto:26-alpine
 
 ARG PAPER_VERSION=26.1.2
-ARG BUILD_ID=69
+ARG BUILD_ID=74
 ARG VERSION="${PAPER_VERSION}-${BUILD_ID}"
-ARG UUID="d30fae0c74092b10855f0412ca6b265c60301a013d34bc28a2a41bf5682dd80b"
+ARG UUID="1d70b1dab9cf4a6de615209a536f3a45a2186240253c428213ce2188ab95e5f7"
 
 ADD --chmod=444 https://fill-data.papermc.io/v1/objects/${UUID}/paper-${PAPER_VERSION}-${BUILD_ID}.jar /minecraft.jar
 
