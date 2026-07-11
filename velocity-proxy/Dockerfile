@@ -1,11 +1,11 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1
 
-FROM amazoncorretto:25-alpine
+FROM amazoncorretto:26-alpine
 
-ARG VELOCITY_VERSION=3.5.0
-ARG BUILD_ID=601
+ARG VELOCITY_VERSION=3.6.0
+ARG BUILD_ID=613
 ARG VERSION="${VELOCITY_VERSION}-${BUILD_ID}"
-ARG UUID="0407642d1ed2883100eb823c2805523f191fa637db1f42ac0ec7ef29cbe455a9"
+ARG UUID="a87eea534bd483209aa5ccb03822cb14d5006796d9c18a59e6e34cfd3c28b5b0"
 
 ADD --chmod=444 https://fill-data.papermc.io/v1/objects/${UUID}/velocity-${VELOCITY_VERSION}-SNAPSHOT-${BUILD_ID}.jar /velocity.jar
 
