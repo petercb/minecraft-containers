@@ -2,12 +2,12 @@
 
 FROM amazoncorretto:26-alpine
 
-ARG VELOCITY_VERSION=3.6.0
-ARG BUILD_ID=613
+ARG VELOCITY_VERSION=4.3.0
+ARG BUILD_ID=44
 ARG VERSION="${VELOCITY_VERSION}-${BUILD_ID}"
-ARG UUID="a87eea534bd483209aa5ccb03822cb14d5006796d9c18a59e6e34cfd3c28b5b0"
+ARG UUID="85be73b90f295acd8d5d45a00ad10bac791d4b72b7554172612a89565ebaaa8f"
 
-ADD --chmod=444 https://fill-data.papermc.io/v1/objects/${UUID}/velocity-${VELOCITY_VERSION}-SNAPSHOT-${BUILD_ID}.jar /velocity.jar
+ADD --chmod=444 https://fill-data.papermc.io/v1/objects/${UUID}/velocity-${VELOCITY_VERSION}-${BUILD_ID}.jar /velocity.jar
 
 COPY entrypoint.sh /
 
